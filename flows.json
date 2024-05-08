@@ -1,0 +1,246 @@
+[
+    {
+        "id": "4da715668c451dce",
+        "type": "inject",
+        "z": "9be81990b3c71bee",
+        "name": "",
+        "props": [
+            {
+                "p": "payloadnewtime",
+                "v": "",
+                "vt": "date"
+            }
+        ],
+        "repeat": "5",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "5",
+        "topic": "",
+        "x": 70,
+        "y": 440,
+        "wires": [
+            [
+                "27c9ee720414a057"
+            ]
+        ]
+    },
+    {
+        "id": "27c9ee720414a057",
+        "type": "function",
+        "z": "9be81990b3c71bee",
+        "name": "function 77",
+        "func": "// 获取要传递的 sensorID\nvar sensorID = flow.get(\"sensorID\");\n\n// 初始化计数器\nif (flow.get('counter') === undefined) {\n    flow.set('counter', 0);\n}\n\n// 定义要传递的值列表\nvar values = \n[\"sensor.0x158d00044fdb62_temperature\", \n\"sensor.0x158d00044fdb62_humidity\",\n\"sensor.a4c138847a20_temperature\",\n\"sensor.a4c138847a20_humidity\" ,\n\"sensor.te_si_la_t1wen_du\",\n\"sensor.ds2\",\n\"sensor.ds3\",\n\"sensor.ds\",\n\"sensor.zywlxitemp7\",\n\"sensor.xiang_xia_hou_yuan_wen_du\",\n\"sensor.plbedroom\",,\n\"sensor.xiang_xia_hou_yuan_wen_du\",\n\"sensor.xiang_xia_hou_yuan_shi_du\",\n\"sensor.xiang_xia_jian_kong_xiang_nei_wen_du\",\n\"sensor.xiang_xia_jian_kong_xiang_nei_shi_du\",\n\"sensor.xiang_xia_hou_yuan_dong_wen_du\",\n\"sensor.nodered_42f2288497f146a9\",\n\"sensor.temperature_03\",\n\"sensor.humidity_03\",\n\"sensor.xiang_xia_hou_yuan_feng_xiang_du\",\n\"sensor.xiang_xia_hou_yuan_feng_xiang_jiao\",\n\"sensor.nodered_2224588a035f17d3\",\n\"sensor.xiang_xia_hou_yuan_feng_su_deng_ji\",\n\"sensor.xiang_xia_hou_yuan_feng_xiang_chuan_gan_qi\",\n\n\n\n\n\n\n\n]; // 替换成你的实际值列表\n\n// 获取当前计数器值\nvar counter = flow.get('counter');\n\n// 如果当前的 sensorID 等于列表中指定位置的值，则构造要传递的消息\n\n    // 构造要传递的消息\n    msg.payload = {\n        entityId: values[counter]\n    };\n\n\n    // 递增计数器\n    counter++;\n\n    // 如果计数器超出值列表长度，则重置为零\n    if (counter >= values.length) {\n        counter = 0;\n    }\n\n    // 将更新后的计数器值保存回流程中\n    flow.set('counter', counter);\n\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 210,
+        "y": 440,
+        "wires": [
+            [
+                "c0608a84bf294e29"
+            ]
+        ]
+    },
+    {
+        "id": "f0393864b8e7da69",
+        "type": "moment",
+        "z": "9be81990b3c71bee",
+        "name": "",
+        "topic": "",
+        "input": "data.last_reported",
+        "inputType": "msg",
+        "inTz": "Asia/Shanghai",
+        "adjAmount": "8",
+        "adjType": "hours",
+        "adjDir": "add",
+        "format": "",
+        "locale": "en-US",
+        "output": "oldtime",
+        "outputType": "flow",
+        "outTz": "Asia/Shanghai",
+        "x": 260,
+        "y": 500,
+        "wires": [
+            [
+                "191ce80b39f82450"
+            ]
+        ]
+    },
+    {
+        "id": "cb60c39b678eb85b",
+        "type": "moment",
+        "z": "9be81990b3c71bee",
+        "name": "",
+        "topic": "",
+        "input": "payloadnewtime",
+        "inputType": "msg",
+        "inTz": "Asia/Shanghai",
+        "adjAmount": "8",
+        "adjType": "hours",
+        "adjDir": "add",
+        "format": "",
+        "locale": "en-US",
+        "output": "newtime",
+        "outputType": "flow",
+        "outTz": "Asia/Shanghai",
+        "x": 260,
+        "y": 540,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "c0608a84bf294e29",
+        "type": "api-current-state",
+        "z": "9be81990b3c71bee",
+        "name": "",
+        "server": "006b152eabe2f41a",
+        "version": 3,
+        "outputs": 1,
+        "halt_if": "",
+        "halt_if_type": "str",
+        "halt_if_compare": "is",
+        "entity_id": "",
+        "state_type": "str",
+        "blockInputOverrides": false,
+        "outputProperties": [
+            {
+                "property": "data",
+                "propertyType": "msg",
+                "value": "",
+                "valueType": "entity"
+            }
+        ],
+        "for": "0",
+        "forType": "num",
+        "forUnits": "minutes",
+        "override_topic": false,
+        "state_location": "payload",
+        "override_payload": "msg",
+        "entity_location": "data",
+        "override_data": "msg",
+        "x": 400,
+        "y": 440,
+        "wires": [
+            [
+                "f0393864b8e7da69",
+                "cb60c39b678eb85b",
+                "a4af681a665db4de"
+            ]
+        ]
+    },
+    {
+        "id": "a4af681a665db4de",
+        "type": "debug",
+        "z": "9be81990b3c71bee",
+        "name": "debug 196",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 550,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "191ce80b39f82450",
+        "type": "function",
+        "z": "9be81990b3c71bee",
+        "name": "代码更新时间2024.3.6v1",
+        "func": "var entity_id = msg.data.entity_id;\nvar state = msg.data.state;\nvar friendly_name = msg.data.attributes.friendly_name;\nvar oldtime = flow.get(\"oldtime\");\nvar newtime = flow.get(\"newtime\");\n\n// 检查数据是否完整\nif (!entity_id || !state || !friendly_name || !oldtime || !newtime) {\n    node.error(\"Missing required data fields.\");\n    return null; // 返回null以中断流程\n}\n\ntry {\n    // 解析文件系统时间字符串为日期对象\n    var fileTime = new Date(newtime);\n    var fileTime1 = new Date(oldtime);\n\n    // 检查日期对象是否有效\n    if (isNaN(fileTime.getTime()) || isNaN(fileTime1.getTime())) {\n        node.error(\"Invalid date format.\");\n        return null; // 返回null以中断流程\n    }\n\n    // 提取小时、分钟和秒并格式化时间字符串\n    var startTime = formatDate(fileTime);\n    var endTime = formatDate(fileTime1);\n\n    // 计算时间差并输出结果\n    var timeDiffInSeconds = calculateTimeDifference(fileTime, fileTime1);\n\n    // 计算其他时间单位\n    var { minutesDiff, hoursDiff, daysDiff, yearsDiff } = calculateTimeUnits(timeDiffInSeconds);\n\n    msg.payload = timeDiffInSeconds;\n    msg.minutesDiff = minutesDiff;\n    msg.hoursDiff = hoursDiff;\n    msg.daysDiff = daysDiff;\n    msg.yearsDiff = yearsDiff;\n\n    msg.payloadjson = {\n        \"entity_id\": entity_id,\n        \"state\": state,\n        \"oldtime\": oldtime,\n        \"newtime\": newtime,\n        \"seconds\": timeDiffInSeconds,\n        \"minutes\": minutesDiff,\n        \"hours\": hoursDiff,\n        \"days\": daysDiff\n    };\n\n    // 获取上次触发时间（如果存在）\n    var lastTriggerTime = flow.get(entity_id);\n\n    // 如果分钟差值大于6分钟，则输出\n    if (minutesDiff > 60 || state == \"unavailable\" || state == \"unknown\") {\n        // 如果上次触发时间不存在，或者距离上次触发已经超过24小时，则触发操作并更新触发时间\n        if (!lastTriggerTime || (newtime - lastTriggerTime) >= (12 * 60 * 60 * 1000)) {\n            // 触发操作\n\n            // 更新触发时间\n            flow.set(entity_id, newtime);\n\n            msg.payload = {\n                \"touser\": \"jjcsjjtz\",\n                \"msgtype\": \"news\",\n                \"agentid\": \"1000002\",\n                \"news\": {\n                    \"articles\": [\n                        {\n                            \"title\": \"系统工单：当前传感器存在长时间未更新情况，请及时处理\",\n                            \"description\": \"离线传感器ID:\" + entity_id + \"\\n\" + \"离线传感器名称：\" + friendly_name + \"\\n\" + \"离线时长：\" + daysDiff + \"天，\" + hoursDiff + \"小时，\" + minutesDiff + \"分钟，\" + \"\\n\" + \"最后更新时间：\" + oldtime + \"\\n\" + \"传感器最后更新值：\" + state + \"\\n\" + \"当前系统时间：\" + newtime,\n                        }\n                    ]\n                }\n            }\n        }\n    }\n    return msg;\n} catch (error) {\n    return null; // 返回null以中断流程\n}\n\nfunction formatDate(date) {\n    var hours = date.getUTCHours();\n    var minutes = date.getUTCMinutes();\n    var seconds = date.getUTCSeconds();\n    return hours.toString().padStart(2, '0') + ':' +\n        minutes.toString().padStart(2, '0') + ':' +\n        seconds.toString().padStart(2, '0');\n}\n\nfunction calculateTimeDifference(startTime, endTime) {\n    // 获取时间差的毫秒数\n    var timeDiffInMilliseconds = endTime.getTime() - startTime.getTime();\n    // 转换为秒并返回\n    return Math.abs(timeDiffInMilliseconds / 1000);\n}\n\nfunction calculateTimeUnits(timeInSeconds) {\n    var minutesDiff = Math.floor(timeInSeconds / 60);\n    var hoursDiff = Math.floor(minutesDiff / 60);\n    var daysDiff = Math.floor(hoursDiff / 24);\n    var yearsDiff = Math.floor(daysDiff / 365);\n    return { minutesDiff, hoursDiff, daysDiff, yearsDiff };\n}\n",
+        "outputs": 1,
+        "timeout": "0",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [
+            {
+                "var": "moment",
+                "module": "moment"
+            }
+        ],
+        "x": 670,
+        "y": 440,
+        "wires": [
+            [
+                "0879a04bd31d06fe"
+            ]
+        ]
+    },
+    {
+        "id": "0879a04bd31d06fe",
+        "type": "bizwechat-push",
+        "z": "9be81990b3c71bee",
+        "name": "",
+        "bizwechat": "66803d6f.5417b4",
+        "x": 880,
+        "y": 440,
+        "wires": [
+            [
+                "67c0968018042ea6"
+            ]
+        ]
+    },
+    {
+        "id": "67c0968018042ea6",
+        "type": "debug",
+        "z": "9be81990b3c71bee",
+        "name": "debug 195",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1070,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "006b152eabe2f41a",
+        "type": "server",
+        "name": "Home Assistant",
+        "version": 5,
+        "addon": false,
+        "rejectUnauthorizedCerts": true,
+        "ha_boolean": "y|yes|true|on|home|open",
+        "connectionDelay": true,
+        "cacheJson": true,
+        "heartbeat": false,
+        "heartbeatInterval": "30",
+        "areaSelector": "friendlyName",
+        "deviceSelector": "friendlyName",
+        "entitySelector": "friendlyName",
+        "statusSeparator": ": ",
+        "statusYear": "hidden",
+        "statusMonth": "short",
+        "statusDay": "numeric",
+        "statusHourCycle": "default",
+        "statusTimeFormat": "h:m",
+        "enableGlobalContextStore": false
+    },
+    {
+        "id": "66803d6f.5417b4",
+        "type": "bizwechat-configurator",
+        "name": "",
+        "port": "3001",
+        "corpid": " ",
+        "agentid": " ",
+        "corpsecret": " ",
+        "url": " ",
+        "token": " ",
+        "aeskey": " ",
+        "proxyWx": "",
+        "client_id": "",
+        "client_secret": ""
+    }
+]
